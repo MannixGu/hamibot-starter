@@ -19,4 +19,5 @@ init();
 unlock()
 check_set_env()
 run()
+sleep(4)
 uploadImg()

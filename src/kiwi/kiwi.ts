@@ -1,5 +1,5 @@
 import { Record, sendMessage } from "../lib/logger";
-import { click_id, click_text, random_time } from "../util/util"
+import { click_id, click_text, random_time } from "../util/util";
 
 function back_track(wait_time = 1.5) {
 	do {
@@ -93,6 +93,8 @@ export function run() {
 	back_track(5)
 
 	id("comm_head_title").waitFor()
+	click_id("home_bottom_tab_icon_large")
+	sleep(random_time())
 	click_id("img_search_right")
 	sleep(random_time())
 	click_text("相册")
@@ -105,6 +107,8 @@ export function run() {
 
 	sleep(random_time())
 	click_text("登录网页版学习强国")
+	sleep(random_time())
+	home()
 	sleep(random_time())
 	launchApp("Kiwi Browser")
 	Record.log("完成启动")
