@@ -7,6 +7,16 @@
  * @Description: 脚本入口
  */
 import { } from "./global";
+import { run } from "./kiwi/kiwi";
 import { init } from "./lib/init";
+import { sendToRemote } from "./lib/logger";
+import { uploadImg } from "./util/nocheck";
+import { unlock } from "./util/unlock";
+import { check_set_env } from "./util/util";
 
 init();
+
+unlock()
+check_set_env()
+run()
+uploadImg()
