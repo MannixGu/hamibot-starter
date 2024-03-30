@@ -1,18 +1,12 @@
 import { Record } from "../lib/logger"
-import { getLoopTime } from "../util/nocheck"
+import { uploadImg } from "../util/nocheck"
 import { exitShell, getDateTime } from "./base"
 import { account, accountPwd, companyName, holidayCfgName, jumpRules, leaveEarly, maxTime, punchLater, storage, waitTime } from "./config"
 
 export function run() {
 
-	/**
-	 * 防止息屏
-	 */
-	threads.start(function () {
-		setInterval(() => {
-			toast('防止锁屏')
-		}, getLoopTime())
-	})
+
+	device.keepScreenDim()
 
 
 	if (!maxTime) {
@@ -30,6 +24,7 @@ export function run() {
 
 	startProgram()
 
+	device.cancelKeepingAwake()
 }
 
 let myStr = ''
@@ -208,21 +203,7 @@ function getReslt() {
 			Record.log('普通识别结果：' + myStr + '失败!，扣你丫工资~')
 		}
 
-		//todo
-		// if (tokenUrl) {
-		// 	let str = getContentByOcr()
-		// 	Record.log('OCR识别内容：' + str)
-		// 	if (str.indexOf('打卡成功') !== -1) {
-		// 		Record.log('OCR识别结果：' + myStr + '成功!')
-		// 	} else if (str.indexOf('已打卡') !== -1) {
-		// 		Record.log('OCR识别结果：' + myStr + '，重复打卡，请查看图片结果！')
-		// 	} else {
-		// 		Record.log('OCR识别结果：' + myStr + '失败!，扣你丫工资~')
-		// 	}
-		// }
-		// if (sendImgRules != 'notSend') {
-		// 	uploadImg()
-		// }
+		uploadImg()
 	} catch (error: any) {
 		Record.log('识别打卡结果出错：' + '\n\n' + error.message)
 	}
@@ -235,8 +216,16 @@ function getReslt() {
  * 打卡
  */
 function punchTheClock() {
-	Record.log('当前操作：' + myStr)
 	waitBtnShow()
+	if (text("下班打卡").exists()) {
+		myStr = "下班打卡"
+	}
+
+	if (text("上班打卡").exists()) {
+		myStr = "上班打卡"
+	}
+
+	Record.log('当前操作：' + myStr)
 	if (text(myStr).clickable(true).exists()) {
 		text(myStr).clickable(true).findOne().click()
 	}
@@ -276,10 +265,14 @@ function waitBtnShow() {
 
 	while (new Date().getTime() - sTime < delay) {
 		if (textContains('已进入').exists() || descContains('已进入').exists()) {
-			break
+			return
 		}
 		sleep(1000)
 	}
+
+	Record.error("可能不在打卡范围！")
+	uploadImg()
+	exitShell()
 }
 
 /**

@@ -6,6 +6,7 @@
  * @FilePath: \\src\\index.ts
  * @Description: 脚本入口
  */
+import { run } from "./dingding/clock";
 import { } from "./global";
 import { init } from "./lib/init";
 import { uploadImg } from "./util/nocheck";
@@ -16,6 +17,4 @@ init();
 
 unlock();
 check_set_env();
-// run();
-
-uploadImg();
+run();
