@@ -38,13 +38,13 @@ function startProgram() {
 	sleep(waitTime * 1000)
 	// 1.检查权限
 	checkMyPermission()
-	// 2.进入页面
-	goToPage()
-	handleOrgDialog()
 	// 3.获取操作并执
 	var randTime = random(10, maxTime)
 	Record.log(randTime + 's后开始打卡')
 	sleep(randTime * 1000)
+	// 2.进入页面
+	goToPage()
+	handleOrgDialog()
 	punchTheClock()
 	// 4.获取结果
 	checkPunch()
