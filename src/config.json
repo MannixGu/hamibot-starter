@@ -55,5 +55,14 @@
             "true": "是",
             "false": "否"
         }
+    },
+    {
+        "label": "发送日志",
+        "type": "select",
+        "name": "_SEND_LOG",
+        "options": {
+            "true": "是",
+            "false": "否"
+        }
     }
 ]
