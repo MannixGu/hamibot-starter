@@ -1,5 +1,41 @@
 [
     {
+        "label": "解锁手势",
+        "type": "select",
+        "name": "gest",
+        "options": {
+            "no": "无",
+            "up": "上滑",
+            "down": "下滑",
+            "left": "左滑",
+            "right": "右滑"
+        },
+        "validation": "required"
+    },
+    {
+        "label": "解锁坐标数组:x,y-x0,y0",
+        "name": "password",
+        "validation": "required"
+    },
+    {
+        "label": "选择器",
+        "type": "select",
+        "name": "lock_type",
+        "options": {
+            "pic": "图形锁",
+            "num": "数字锁",
+            "no": "无锁"
+        },
+        "validation": "required"
+    },
+    {
+        "name": "delay",
+        "type": "number",
+        "label": "跳转页面加载的时间(以秒s为单位)",
+        "validation": "required",
+        "help": "默认为1s(支持小数点形式)，根据手机性能与网络情况自行而定，时间越长出bug的可能越小，但同时耗费的时间越长"
+    },
+    {
         "name": "_TOKEN",
         "type": "text",
         "label": "pushplus 的用户 Token",

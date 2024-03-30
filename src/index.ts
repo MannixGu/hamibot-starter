@@ -6,7 +6,7 @@
  * @FilePath: \\src\\index.ts
  * @Description: 脚本入口
  */
-import {} from "./global";
+import { } from "./global";
 import { init } from "./lib/init";
 
 init();
