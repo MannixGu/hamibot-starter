@@ -9,11 +9,25 @@
 import { run } from "./dingding/clock";
 import { } from "./global";
 import { init } from "./lib/init";
+import { Record } from "./lib/logger";
 import { unlock } from "./util/unlock";
 import { check_set_env } from "./util/util";
 
-init();
 
-unlock();
-check_set_env();
-run();
+events.on("exit", () => {
+	device.cancelKeepingAwake()
+
+	home()
+	gesture(60, [500, 1600], [500, 1600])
+});
+
+try {
+	device.keepScreenDim()
+	init();
+
+	unlock();
+	check_set_env();
+	run();
+} catch (error: any) {
+	Record.error("Run Error:" + error.message);
+}
