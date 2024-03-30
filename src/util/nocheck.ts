@@ -1,3 +1,4 @@
+import { Record, sendToRemote } from "../lib/logger"
 
 // @ts-ignore
 importClass(android.provider.Settings)
@@ -29,4 +30,45 @@ export function getLoopTime() {
 		return 8000
 	}
 	return lockTime / 2
+}
+
+/**
+ * 上传截图至SMMS
+ */
+export function uploadImg() {
+	const url = 'https://imgbb.com/json'
+	const fileName = '/sdcard/' + new Date().getTime() + '.png'
+	captureScreen(fileName)
+	try {
+		let res = http.postMultipart(
+			url,
+			// @ts-ignore
+			{
+				source: open(fileName),
+				type: 'file',
+				action: 'upload',
+				auth_token: '2bf04f5cbe67dbe44a90ded6bbdcddfe',
+				expiration: 'PT5M',
+			},
+			{
+				headers: {
+					'User-Agent':
+						'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+				},
+			}
+		)
+		let jsonObj = JSON.parse(res.body.string())
+		let isSuc = jsonObj.success.code == 200
+		let imgUrl = jsonObj.image.url
+		if (isSuc) {
+			Record.log(
+				'手机截图删除结果：' + (files.remove(fileName) ? '成功' : '失败')
+			)
+			sendToRemote("截图", "![url](" + imgUrl + ")", "markdown")
+		} else {
+			Record.error('图片上传失败~', false)
+		}
+	} catch (e: any) {
+		Record.error('图片上传失败~', e.message)
+	}
 }

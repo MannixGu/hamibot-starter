@@ -792,7 +792,7 @@ function parseTrace(originTrace: string): TraceStackFrame[] {
  * @param {string} template 模板 markdown ｜ html
  * @return {boolean} 是否发送成功。
  */
-function sendToRemote(title: string, message: string, template: string = 'html'): boolean {
+export function sendToRemote(title: string, message: string, template: string = 'html'): boolean {
     // TODO: 抛出异常？
     if (_token === null) {
         return false;
