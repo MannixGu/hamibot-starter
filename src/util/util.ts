@@ -34,10 +34,11 @@ export function check_set_env() {
 
 			let beginBtn =
 				textContains("START NOW").findOne(delay_time) ??
-				classNameContent("Button").textContains("开始").findOne(delay_time) ??
-				classNameContent("Button").textContains("允许").findOne(delay_time) ??
-				classNameContent("Button").textContains("ALLOW").findOne(delay_time) ??
-				classNameContent("Button").textContains("Start now").findOne(delay_time)
+				textContains("立即开始").findOne(delay_time) ??
+				textContains("开始").findOne(delay_time) ??
+				textContains("允许").findOne(delay_time) ??
+				textContains("ALLOW").findOne(delay_time) ??
+				textContains("Start now").findOne(delay_time)
 
 			beginBtn?.click();
 
@@ -95,8 +96,8 @@ export function random_time(times = 1.0, interval = 500) {
  */
 export function click_target(target: UiObject) {
 	let tmp: Rect = target.bounds()
-	let randomX = random(tmp.left + 2, tmp.right - 2);
-	let randomY = random(tmp.top + 2, tmp.bottom - 2);
+	let randomX = random(tmp.left, tmp.right);
+	let randomY = random(tmp.top, tmp.bottom);
 	click(randomX, randomY);
 }
 
@@ -119,16 +120,16 @@ export function click_text(target: string) {
  * 刷新页面
  * @param {boolean} orientation 方向标识 true表示从下至上 false表示从上至下
  */
-export function refresh(orientation) {
+export function refresh(orientation, pace = 2) {
 	let startx = random(device.width * 0.7, device.width * 0.8)
 	if (orientation) {
 		let starty = random(device.height * 0.7, device.height * 0.8)
 		gestureTouchPoint(startx, starty,
-			startx + random(-5, 5), starty - random(300, 500), 2)
+			startx + random(-5, 5), starty - random(500, 600), pace)
 	} else {
 		let starty = random(device.height * 0.4, device.height * 0.6)
 		gestureTouchPoint(startx, starty,
-			startx + + random(-5, 5), starty + random_int(300, 500), 2)
+			startx + + random(-5, 5), starty + random_int(500, 600), pace)
 	}
 
 	sleep(random_time(0.5));
