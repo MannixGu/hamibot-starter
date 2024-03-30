@@ -57,15 +57,6 @@
         }
     },
     {
-        "label": "发送日志",
-        "type": "select",
-        "name": "_SEND_LOG",
-        "options": {
-            "true": "是",
-            "false": "否"
-        }
-    },
-    {
         "label": "[非必填] 公司名",
         "name": "companyName",
         "placeholder": "如果你的钉钉加入了多个公司，请填写你打卡的公司名"
@@ -93,7 +84,7 @@
     },
     {
         "label": "[非必填] 钉钉登录密码",
-        "type":"password",
+        "type": "password",
         "name": "accountPwd"
     },
     {
