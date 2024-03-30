@@ -2,5 +2,11 @@
     "fileMark": {
         "configFile": "src/config.json",
         "scriptFile": "dist/index.js"
+    },
+    "name": "钉钉打卡",
+    "scriptId": "63e612ef66846f06c36737e6",
+    "executeRobot": {
+        "_id": "63c50580932b7a81fa6bbee4",
+        "name": "realme"
     }
 }
