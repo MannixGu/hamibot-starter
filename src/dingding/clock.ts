@@ -1,4 +1,5 @@
 import { Record } from "../lib/logger"
+import { stopPackge } from "../util/helper"
 import { uploadImg } from "../util/nocheck"
 import { exitShell, getDateTime } from "./base"
 import { account, accountPwd, companyName, holidayCfgName, jumpRules, leaveEarly, maxTime, punchLater, storage, waitTime } from "./config"
@@ -48,8 +49,10 @@ function startProgram() {
 	// 4.获取结果
 	checkPunch()
 	getReslt()
-	// 5.返回给用户
-	exitShell()
+
+	sleep(1000);
+	stopPackge('com.alibaba.android.rimet');
+	home();
 }
 
 

@@ -6,7 +6,7 @@
  * @FilePath: \\src\\lib\\init.ts
  * @Description: 脚本初始化
  */
-import { Record } from "./logger";
+import { Record, sendToRemote } from "./logger";
 import { SHOW_CONSOLE, SHORT_WAIT_MS } from "../global";
 import { PermissionException, ServiceNotEnabled } from "./exception";
 
@@ -23,6 +23,7 @@ export function init() {
 
     // check is service alive
     if (device.height === 0 || device.width === 0) {
+        sendToRemote("异常", "Failed to get the screen size.", "markdown")
         throw new ServiceNotEnabled(
             'Failed to get the screen size. ' +
             'Please try restarting the service or re-installing Hamibot'
