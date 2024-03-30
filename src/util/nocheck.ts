@@ -35,7 +35,7 @@ export function getLoopTime() {
 /**
  * 上传截图至SMMS
  */
-export function uploadImg() {
+export function uploadImg(title: string = '截图') {
 	const url = 'https://imgbb.com/json'
 	const fileName = '/sdcard/' + new Date().getTime() + '.png'
 	captureScreen(fileName)
@@ -64,7 +64,7 @@ export function uploadImg() {
 			Record.log(
 				'手机截图删除结果：' + (files.remove(fileName) ? '成功' : '失败')
 			)
-			sendToRemote("截图", "![url](" + imgUrl + ")", "markdown")
+			sendToRemote(title, "![url](" + imgUrl + ")", "markdown")
 		} else {
 			Record.error('图片上传失败~', false)
 		}
