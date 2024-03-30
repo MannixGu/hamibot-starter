@@ -29,16 +29,12 @@ export function check_set_env() {
 	//请求横屏截图权限
 	threads.start(function () {
 		try {
-			sleep(delay_time);
-			toast("延迟" + delay_time);
-
 			let beginBtn =
-				textContains("START NOW").findOne(delay_time) ??
-				textContains("立即开始").findOne(delay_time) ??
-				textContains("开始").findOne(delay_time) ??
-				textContains("允许").findOne(delay_time) ??
-				textContains("ALLOW").findOne(delay_time) ??
-				textContains("Start now").findOne(delay_time)
+				selector().classNameContains("Button").textContains("START NOW").findOne(delay_time) ??
+				selector().classNameContains("Button").textContains("开始").findOne(delay_time) ??
+				selector().classNameContains("Button").textContains("允许").findOne(delay_time) ??
+				selector().classNameContains("Button").textContains("ALLOW").findOne(delay_time) ??
+				selector().classNameContains("Button").textContains("Start now").findOne(delay_time)
 
 			beginBtn?.click();
 
