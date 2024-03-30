@@ -93,6 +93,7 @@
     },
     {
         "label": "[非必填] 钉钉登录密码",
+        "type":"password",
         "name": "accountPwd"
     },
     {
@@ -109,10 +110,5 @@
         "label": "停顿时间：若进入打卡页面失败，请调大该数字（秒）",
         "name": "waitTime",
         "validation": "required|number"
-    },
-    {
-        "label": "[非必填] 百度OCR Token的get方式 Url",
-        "name": "tokenUrl",
-        "placeholder": "若填写，则通过OCR识别打卡结果中是否包含打卡成功字样"
     }
 ]
