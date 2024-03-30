@@ -10,7 +10,7 @@
 import { ConfigInvalidException } from "./lib/exception";
 import { LogLevel, LOG_STACK, Record, sendLog, setToken } from "./lib/logger";
 
-export const PROJECT_NAME = "Untitled Script"
+export const PROJECT_NAME = "Dingding Script"
 
 /**
  * @description: 脚本版本号。建议根据 [语义化版本号] 迭代

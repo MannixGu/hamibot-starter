@@ -9,7 +9,6 @@
 import { run } from "./dingding/clock";
 import { } from "./global";
 import { init } from "./lib/init";
-import { uploadImg } from "./util/nocheck";
 import { unlock } from "./util/unlock";
 import { check_set_env } from "./util/util";
 
