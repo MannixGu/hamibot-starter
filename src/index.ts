@@ -10,23 +10,23 @@ import { run } from "./dingding/clock";
 import { } from "./global";
 import { init } from "./lib/init";
 import { Record } from "./lib/logger";
+import { stopPackge } from "./util/helper";
 import { unlock } from "./util/unlock";
 import { check_set_env } from "./util/util";
 
 function lock_screen() {
 	Record.log("lock screen...");
-	// shell("input keyevent 26", true);
-
-	press(500, 1600, 1)
-	sleep(50)
-	press(510, 1601, 1)
+	app.launchApp("一键锁屏")
 }
 
 
 events.on("exit", () => {
 	device.cancelKeepingAwake()
+	back()
 
-	home()
+	// stopPackge('com.alibaba.android.rimet');
+	home();
+	sleep(1000)
 	lock_screen()
 });
 
@@ -36,6 +36,8 @@ try {
 
 	unlock();
 	check_set_env();
+	back()
+	back()
 	run()
 } catch (error: any) {
 	Record.error("Run Error:" + error.message);

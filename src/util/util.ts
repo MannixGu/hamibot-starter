@@ -1,3 +1,4 @@
+import { Record } from "../lib/logger";
 import { gestureTouchPoint } from "./touch";
 
 let { delay } = hamibot.env;
@@ -129,4 +130,34 @@ export function refresh(orientation, pace = 2) {
 	}
 
 	sleep(random_time(0.5));
+}
+
+export function findTarget(...list: [string, string][]): UiObject | null {
+	return findTargetTime(1500, ...list);
+}
+
+export function findTargetTime(waitTime, ...list: [string, string][]): UiObject | null {
+	let find: UiObject | null = null;
+	for (const pair of list) {
+		switch (pair[1]) {
+			case "id":
+				find = id(pair[0]).findOne(waitTime) ?? (() => { Record.log("not find id: " + pair); return null })()
+				break;
+			case "desc":
+				find = desc(pair[0]).findOne(waitTime) ?? (() => { Record.log("not find desc: " + pair); return null })()
+				break;
+			case "text":
+			default:
+				find = text(pair[0]).findOne(waitTime) ?? (() => { Record.log("not find text: " + pair); return null })()
+		}
+		if (find !== null) {
+			break;
+		}
+	}
+
+	if (find === null) {
+		exit()
+	}
+
+	return find
 }

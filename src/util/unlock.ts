@@ -1,4 +1,5 @@
 import { isLocked } from "./nocheck";
+import { gestureTouchPoint } from "./touch";
 
 const { gest } = hamibot.env;
 const { password } = hamibot.env;
@@ -25,13 +26,16 @@ export function unlock() {
 	//手势
 	switch (gest) {
 		case "up":
-			gesture(100, [dwc, dh / 10 * 9], [dwc, dh / 10]); break;
+			gestureTouchPoint(dwc, dh * 0.9, dwc, dh * 0.3, 3); break;
 		case "down":
-			gesture(100, [dwc, dh / 10], [dwc, dh / 10 * 9]); break;
+			gestureTouchPoint(dwc, dh * 0.3, dwc, dh * 0.9, 3); break;
+		// gesture(100, [dwc, dh / 10], [dwc, dh / 10 * 8]); break;
 		case "right":
-			gesture(100, [dw / 8, dhc], [dw / 8 * 7, dhc]); break;
+			gestureTouchPoint(dw * 0.3, dhc, dw * 0.8, dhc, 3); break;
+		// gesture(100, [dw / 8, dhc], [dw / 8 * 6, dhc]); break;
 		case "left":
-			gesture(100, [dw / 8 * 7, dhc], [dw / 8, dhc]); break;
+			gestureTouchPoint(dw * 0.8, dhc, dw * 0.2, dhc, 3); break;
+		// gesture(100, [dw / 8 * 6, dhc], [dw / 8, dhc]); break;
 		default:
 			return;
 	}
@@ -40,7 +44,7 @@ export function unlock() {
 		return
 	}
 
-	sleep(800);
+	sleep(1000);
 
 	//解析坐标构造解锁坐标数组
 	let arr = password.split("-");

@@ -1,8 +1,10 @@
 import { Record } from "../lib/logger"
-import { stopPackge } from "../util/helper"
 import { uploadImg } from "../util/nocheck"
+import { click_target, findTargetTime } from "../util/util"
 import { exitShell, getDateTime } from "./base"
 import { account, accountPwd, companyName, holidayCfgName, jumpRules, leaveEarly, maxTime, punchLater, storage, waitTime } from "./config"
+
+let waitTimeMillisecond = waitTime * 1000
 
 export function run() {
 
@@ -21,6 +23,8 @@ export function run() {
 		exitShell()
 	}
 
+	Record.debug("maxTime:%s, waitTime:%s, waitTimeMillisecond:%s", maxTime, waitTime, waitTimeMillisecond)
+
 	/* --------------------------------------预配置结束----------------------------------- */
 
 	startProgram()
@@ -35,7 +39,7 @@ let myStr = ''
  * 脚本流程
  */
 function startProgram() {
-	sleep(waitTime * 1000)
+	sleep(waitTimeMillisecond)
 	// 1.检查权限
 	checkMyPermission()
 	// 3.获取操作并执
@@ -51,79 +55,104 @@ function startProgram() {
 	getReslt()
 
 	sleep(1000);
-	stopPackge('com.alibaba.android.rimet');
-	home();
 }
 
+function clickFindTarget(parent: boolean = false, ...list: [string, string][]) {
+	let target: UiObject | null = findTargetTime(waitTimeMillisecond, ...list)
+	if (parent) {
+		target = target!!.parent()
+	}
 
+	Record.log('click %s, %s', target?.text(), target?.id())
+	click_target(target!!)
+	sleep(waitTimeMillisecond)
+}
 
 /**
  * 是否需要登录
  */
 function loginIfNeed() {
-	if (text('密码登录').clickable(true).exists()) {
-		text('密码登录').clickable(true).findOne().click()
-	} else if (desc('密码登录').clickable(true).exists()) {
-		desc('密码登录').clickable(true).findOne().click()
-	}
+	// if (text('密码登录').clickable(true).exists()) {
+	// 	text('密码登录').clickable(true).findOne().click()
+	// } else if (desc('密码登录').clickable(true).exists()) {
+	// 	desc('密码登录').clickable(true).findOne().click()
+	// }
 
 	if (
-		text('忘记密码').clickable(true).exists() ||
-		desc('忘记密码').clickable(true).exists()
+		id('ic_edit_phone').exists() || textStartsWith('我已阅读并同意').exists()
 	) {
+		Record.log('需要登录')
 		if (!account || !accountPwd) {
 			Record.log('当前未登录，请输入钉钉登录账号及密码')
 			exitShell()
 		}
 
-		if (id('et_phone_input').exists() && id('et_pwd_login').exists()) {
-			id('et_phone_input').findOne().setText(account)
-			sleep(1000)
-			id('et_pwd_login').findOne().setText(accountPwd)
-			log('使用ID选择输入')
-		} else {
-			setText(0, account)
-			sleep(1000)
-			setText(1, accountPwd)
-			log('使用setText输入')
-		}
-		// 勾选协议
-		log('勾选协议')
-		if (id('cb_privacy').exists()) {
-			id('cb_privacy').findOne().click()
-			log('勾选协议成功')
-		}
-		// Android版本低于7.0
-		if (device.sdkInt < 24) {
-			let pageUIObj: any
-			if (id('btn_next').clickable(true).exists()) {
-				id('btn_next').clickable(true).findOne().click()
-			} else {
-				if (text('忘记密码').exists()) {
-					pageUIObj = text('忘记密码').findOne().parent()?.parent()?.children()
-				} else {
-					pageUIObj = desc('忘记密码').findOne().parent()?.parent()?.children()
-				}
-				if (pageUIObj.length == 5) {
-					let loginBtn = pageUIObj[3].children()[0]
-					loginBtn.click()
-				} else {
-					Record.log('找不到登录按钮，请联系脚本作者!')
-				}
-			}
-		} else {
-			//获取登录按钮坐标
-			if (text('忘记密码').clickable(true).exists()) {
-				var loginBtnY =
-					text('忘记密码').clickable(true).findOne().bounds().top - 10
-			} else {
-				var loginBtnY =
-					desc('忘记密码').clickable(true).findOne().bounds().top - 10
-			}
+		// if (id('ic_edit_phone').exists()) {
+		// 	id('ic_edit_phone').findOne().click()
+		// }
 
-			//todo 点击登录
-			click(device.width / 2, loginBtnY)
+		clickFindTarget(false, ['tv_next', 'id'])
+
+		if (id('btn_privacy_dialog_confirm').exists()) {
+			clickFindTarget(false, ['btn_privacy_dialog_confirm', 'id'])
 		}
+
+		clickFindTarget(true, ['密码登录', 'text'])
+
+		if (id('et_pwd_input').exists()) {
+			id('et_pwd_input').findOne().setText(accountPwd)
+			sleep(waitTimeMillisecond)
+		}
+
+		clickFindTarget(false, ['btn_confirm', 'id'])
+
+		// if (id('et_phone_input').exists() && id('et_pwd_login').exists()) {
+		// 	id('et_phone_input').findOne().setText(account)
+		// 	sleep(1000)
+		// 	id('et_pwd_login').findOne().setText(accountPwd)
+		// 	log('使用ID选择输入')
+		// } else {
+		// 	setText(0, account)
+		// 	sleep(1000)
+		// 	setText(1, accountPwd)
+		// 	log('使用setText输入')
+		// }
+		// // 勾选协议
+		// log('勾选协议')
+		// if (id('cb_privacy').exists()) {
+		// 	id('cb_privacy').findOne().click()
+		// 	log('勾选协议成功')
+		// }
+		// // Android版本低于7.0
+		// if (device.sdkInt < 24) {
+		// 	let pageUIObj: any
+		// 	if (id('btn_next').clickable(true).exists()) {
+		// 		id('btn_next').clickable(true).findOne().click()
+		// 	} else {
+		// 		if (text('忘记密码').exists()) {
+		// 			pageUIObj = text('忘记密码').findOne().parent()?.parent()?.children()
+		// 		} else {
+		// 			pageUIObj = desc('忘记密码').findOne().parent()?.parent()?.children()
+		// 		}
+		// 		if (pageUIObj.length == 5) {
+		// 			let loginBtn = pageUIObj[3].children()[0]
+		// 			loginBtn.click()
+		// 		} else {
+		// 			Record.log('找不到登录按钮，请联系脚本作者!')
+		// 		}
+		// 	}
+		// } else {
+		// 	//获取登录按钮坐标
+		// 	if (text('忘记密码').clickable(true).exists()) {
+		// 		var loginBtnY =
+		// 			text('忘记密码').clickable(true).findOne().bounds().top - 10
+		// 	} else {
+		// 		var loginBtnY =
+		// 			desc('忘记密码').clickable(true).findOne().bounds().top - 10
+		// 	}
+
+		// 	click(device.width / 2, loginBtnY)
+		// }
 
 		Record.log('登录成功')
 	} else {
@@ -206,7 +235,7 @@ function getReslt() {
 		// 	Record.log('普通识别结果：' + myStr + '失败!，扣你丫工资~')
 		// }
 
-		// uploadImg()
+		uploadImg()
 
 		Record.warn("打卡结果：====================")
 		textContains("打卡").find().each(obj => {
@@ -226,22 +255,26 @@ function getReslt() {
  * 打卡
  */
 function punchTheClock() {
-	waitBtnShow()
-	if (text("下班打卡").exists()) {
-		myStr = "下班打卡"
-	}
+	// waitBtnShow()
+	// if (text("下班打卡").exists()) {
+	// 	myStr = "下班打卡"
+	// }
 
-	if (text("上班打卡").exists()) {
-		myStr = "上班打卡"
-	}
+	// if (text("上班打卡").exists()) {
+	// 	myStr = "上班打卡"
+	// }
 
-	Record.log('当前操作：' + myStr)
-	if (text(myStr).clickable(true).exists()) {
-		text(myStr).clickable(true).findOne().click()
-	}
-	if (desc(myStr).clickable(true).exists()) {
-		desc(myStr).clickable(true).findOne().click()
-	}
+	// Record.log('当前操作：' + myStr)
+	// if (text(myStr).clickable(true).exists()) {
+	// 	text(myStr).clickable(true).findOne().click()
+	// }
+	// if (desc(myStr).clickable(true).exists()) {
+	// 	desc(myStr).clickable(true).findOne().click()
+	// }
+
+	let clickX = device.width / 2;
+	let clickY = device.height * 0.72;
+	click(clickX, clickY)
 }
 
 /**
@@ -251,19 +284,20 @@ function waitStart() {
 	let sTime = new Date().getTime()
 	let delay = 30000
 
-	while (new Date().getTime() - sTime < delay) {
-		if (
-			text('忘记密码').exists() ||
-			desc('忘记密码').exists() ||
-			text('工作台').exists() ||
-			desc('工作台').exists() ||
-			text('密码登录').exists() ||
-			desc('密码登录').exists()
-		) {
-			break
-		}
-		sleep(1000)
-	}
+	sleep(10 * waitTimeMillisecond)
+	// while ((new Date().getTime() - sTime) < delay) {
+	// 	if (
+	// 		text('忘记密码').exists() ||
+	// 		desc('忘记密码').exists() ||
+	// 		text('工作台').exists() ||
+	// 		desc('工作台').exists() ||
+	// 		text('密码登录').exists() ||
+	// 		desc('密码登录').exists()
+	// 	) {
+	// 		break
+	// 	}
+	// 	sleep(1000)
+	// }
 }
 
 /**
@@ -297,14 +331,22 @@ function handleOrgDialog() {
 	let sTime = new Date().getTime()
 	while (new Date().getTime() - sTime < delay) {
 		if (text(flagStr).exists() || desc(flagStr).exists()) {
+			if (text(companyName).clickable(true).exists()) {
+				let company = text(companyName).findOne()
+				click_target(company)
+				Record.log('选择公司1' + company.text())
+				return
+			}
 			if (textContains(companyName).clickable(true).exists()) {
-				textContains(companyName).findOne().click()
-				Record.log('选择公司：' + companyName)
+				let company = textContains(companyName).findOne()
+				click_target(company)
+				Record.log('选择公司2' + company.text())
 				return
 			}
 			if (descContains(companyName).clickable(true).exists()) {
-				descContains(companyName).findOne().click()
-				Record.log('选择公司：' + companyName)
+				let company = descContains(companyName).findOne()
+				click_target(company)
+				Record.log('选择公司3' + company.text())
 				return
 			}
 		} else {
@@ -320,9 +362,10 @@ function goToPage() {
 	Record.log('打开钉钉中...')
 	launch('com.alibaba.android.rimet')
 	waitStart()
+	sleep(waitTimeMillisecond)
 	Record.log('启动完成')
 	loginIfNeed()
-	sleep(waitTime * 1000)
+	sleep(waitTimeMillisecond)
 	Record.log('进入打卡页面')
 	let a = app.intent({
 		action: 'VIEW',
