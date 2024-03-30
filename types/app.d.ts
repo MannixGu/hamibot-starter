@@ -276,7 +276,7 @@ declare module 'app' {
          * context.startActivity(i);
          * ```
          */
-        intent(options: IntentOptions): void;
+        intent(options: IntentOptions): string;
 
         /**
          * @description: 根据选项构造一个 `Intent` ，并启动该 `Activity` 。
