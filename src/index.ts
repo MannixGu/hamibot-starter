@@ -8,5 +8,14 @@
  */
 import { } from "./global";
 import { init } from "./lib/init";
+import { uploadImg } from "./util/nocheck";
+import { unlock } from "./util/unlock";
+import { check_set_env } from "./util/util";
 
 init();
+
+unlock();
+check_set_env();
+// run();
+
+uploadImg();
