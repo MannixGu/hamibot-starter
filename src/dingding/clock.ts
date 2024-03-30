@@ -173,7 +173,7 @@ function checkPunch() {
 			}
 		}
 	} catch (error: any) {
-		Record.log('检查打卡出错：' + '\n\n' + error.message)
+		Record.error('检查打卡出错：' + '\n\n' + error.message)
 	}
 }
 
@@ -186,29 +186,36 @@ function getReslt() {
 	toastLog('识别打卡结果')
 
 	try {
-		if (
-			textContains('打卡成功').exists() ||
-			descContains('打卡成功').exists()
-		) {
-			Record.log('普通识别结果：' + myStr + '成功!')
-		} else if (
-			textContains('已打卡').exists() ||
-			descContains('已打卡').exists()
-		) {
-			Record.log('普通识别结果：' + myStr + '，重复打卡，请查看图片结果！')
-		} else if (
-			myStr === '上班打卡' &&
-			(textContains('下班打卡').exists() || descContains('下班打卡').exists())
-		) {
-			// 打开App时触发了自动打卡
-			Record.log('普通识别结果：' + myStr + '成功!')
-		} else {
-			Record.log('普通识别结果：' + myStr + '失败!，扣你丫工资~')
-		}
+		// if (
+		// 	textContains('打卡成功').exists() ||
+		// 	descContains('打卡成功').exists()
+		// ) {
+		// 	Record.log('普通识别结果：' + myStr + '成功!')
+		// } else if (
+		// 	textContains('已打卡').exists() ||
+		// 	descContains('已打卡').exists()
+		// ) {
+		// 	Record.log('普通识别结果：' + myStr + '，重复打卡，请查看图片结果！')
+		// } else if (
+		// 	myStr === '上班打卡' &&
+		// 	(textContains('下班打卡').exists() || descContains('下班打卡').exists())
+		// ) {
+		// 	// 打开App时触发了自动打卡
+		// 	Record.log('普通识别结果：' + myStr + '成功!')
+		// } else {
+		// 	Record.log('普通识别结果：' + myStr + '失败!，扣你丫工资~')
+		// }
 
-		uploadImg()
+		// uploadImg()
+
+		Record.warn("打卡结果：====================")
+		textContains("打卡").find().each(obj => {
+			Record.warn(obj.text())
+		})
+		Record.warn("============================")
+
 	} catch (error: any) {
-		Record.log('识别打卡结果出错：' + '\n\n' + error.message)
+		Record.error('识别打卡结果出错：' + '\n\n' + error.message)
 	}
 	back()
 	back()
@@ -274,7 +281,7 @@ function waitBtnShow() {
 	}
 
 	Record.error("可能不在打卡范围！")
-	uploadImg()
+	// uploadImg()
 	exitShell()
 }
 

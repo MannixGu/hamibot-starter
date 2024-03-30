@@ -322,7 +322,7 @@ export class LoggerSchemes {
     static readonly warn = {
         'displayName': 'WARN',
         'logFunction': console.warn,
-        'color': 'yellow',
+        'color': 'blue',
         'level': LogLevel.Warn
     }
     static readonly error = {
