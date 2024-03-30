@@ -10,7 +10,6 @@ import { run } from "./dingding/clock";
 import { } from "./global";
 import { init } from "./lib/init";
 import { Record } from "./lib/logger";
-import { stopPackge } from "./util/helper";
 import { unlock } from "./util/unlock";
 import { check_set_env } from "./util/util";
 
@@ -39,6 +38,7 @@ try {
 	back()
 	back()
 	run()
+	device.cancelKeepingAwake()
 } catch (error: any) {
 	Record.error("Run Error:" + error.message);
 }

@@ -1,3 +1,4 @@
+import { OcrResult } from "ocr"
 import { Record } from "../lib/logger"
 import { uploadImg } from "../util/nocheck"
 import { click_target, findTargetTime } from "../util/util"
@@ -7,9 +8,6 @@ import { account, accountPwd, companyName, holidayCfgName, jumpRules, leaveEarly
 let waitTimeMillisecond = waitTime * 1000
 
 export function run() {
-
-
-	device.keepScreenDim()
 
 
 	if (!maxTime) {
@@ -28,8 +26,6 @@ export function run() {
 	/* --------------------------------------预配置结束----------------------------------- */
 
 	startProgram()
-
-	device.cancelKeepingAwake()
 }
 
 let myStr = ''
@@ -206,6 +202,12 @@ function checkPunch() {
 	}
 }
 
+function recognizeScreen(): OcrResult {
+	sleep(1000)
+	toastLog('开始识别');
+	return ocr.recognize(captureScreen());
+}
+
 /**
  * 获取打卡结果
  */
@@ -235,17 +237,23 @@ function getReslt() {
 		// 	Record.log('普通识别结果：' + myStr + '失败!，扣你丫工资~')
 		// }
 
-		uploadImg()
+		// uploadImg()
 
+		let matchRule = /[\d:]*[已未]打卡|打卡成功|打卡时间/
 		Record.warn("打卡结果：====================")
-		textContains("打卡").find().each(obj => {
-			Record.warn(obj.text())
+		let rest = recognizeScreen()
+		// Record.log(rest.text)
+		rest.results.forEach(obj => {
+			if (matchRule.test(obj.text)) {
+				Record.warn(obj.text)
+			}
 		})
 		Record.warn("============================")
 
 	} catch (error: any) {
 		Record.error('识别打卡结果出错：' + '\n\n' + error.message)
 	}
+	sleep(waitTimeMillisecond)
 	back()
 	back()
 }
@@ -255,34 +263,30 @@ function getReslt() {
  * 打卡
  */
 function punchTheClock() {
-	// waitBtnShow()
-	// if (text("下班打卡").exists()) {
-	// 	myStr = "下班打卡"
-	// }
+	toastLog('等待10s，确保打卡界面完成')
+	sleep(10000)
+	Record.info('开始打卡')
 
-	// if (text("上班打卡").exists()) {
-	// 	myStr = "上班打卡"
-	// }
+	let matchRule = /[上下]班打卡/
+	let obj = recognizeScreen().results.find(obj => matchRule.test(obj.text))
 
-	// Record.log('当前操作：' + myStr)
-	// if (text(myStr).clickable(true).exists()) {
-	// 	text(myStr).clickable(true).findOne().click()
-	// }
-	// if (desc(myStr).clickable(true).exists()) {
-	// 	desc(myStr).clickable(true).findOne().click()
-	// }
+	if (obj != undefined) {
+		Record.info("点击:" + obj.text + " [%d %d %d %d] ",
+			obj.bounds.left,
+			obj.bounds.top,
+			obj.bounds.right,
+			obj.bounds.bottom)
 
-	let clickX = device.width / 2;
-	let clickY = device.height * 0.72;
-	click(clickX, clickY)
+		click(obj.bounds.left, obj.bounds.top)
+	}
 }
 
 /**
  * 等待进入钉钉登录界面或者主界面
  */
 function waitStart() {
-	let sTime = new Date().getTime()
-	let delay = 30000
+	// let sTime = new Date().getTime()
+	// let delay = 30000
 
 	sleep(10 * waitTimeMillisecond)
 	// while ((new Date().getTime() - sTime) < delay) {
@@ -300,24 +304,6 @@ function waitStart() {
 	// }
 }
 
-/**
- * 等待打卡按钮出现
- */
-function waitBtnShow() {
-	let sTime = new Date().getTime()
-	let delay = 60000
-
-	while (new Date().getTime() - sTime < delay) {
-		if (textContains('已进入').exists() || descContains('已进入').exists()) {
-			return
-		}
-		sleep(1000)
-	}
-
-	Record.error("可能不在打卡范围！")
-	// uploadImg()
-	exitShell()
-}
 
 /**
  * 钉钉可能加入了多个公司，通过意图进入打卡页面会提示选择
