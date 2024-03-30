@@ -1,3 +1,5 @@
+import { isLocked } from "./nocheck";
+
 const { gest } = hamibot.env;
 const { password } = hamibot.env;
 const { lock_type } = hamibot.env;
@@ -30,6 +32,12 @@ export function unlock() {
 			gesture(100, [dw / 8, dhc], [dw / 8 * 7, dhc]); break;
 		case "left":
 			gesture(100, [dw / 8 * 7, dhc], [dw / 8, dhc]); break;
+		default:
+			return;
+	}
+
+	if (!isLocked()) {
+		return
 	}
 
 	sleep(800);
