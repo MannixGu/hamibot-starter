@@ -789,9 +789,10 @@ function parseTrace(originTrace: string): TraceStackFrame[] {
  * @description: 使用 pushplus 推送文本。
  * @param {string} title 发送消息的标题。
  * @param {string} message 要发送的消息。
+ * @param {string} template 模板 markdown ｜ html
  * @return {boolean} 是否发送成功。
  */
-function sendToRemote(title: string, message: string): boolean {
+function sendToRemote(title: string, message: string, template: string = 'html'): boolean {
     // TODO: 抛出异常？
     if (_token === null) {
         return false;
@@ -801,7 +802,7 @@ function sendToRemote(title: string, message: string): boolean {
         title: title,
         token: _token,
         content: message,
-        template: 'html'
+        template: template
     })
 
     return res.statusCode === 200;

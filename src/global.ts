@@ -32,6 +32,7 @@ Record.info(`Launching...\n\n\tCurrent script version: ${VERSION}\n`);
 const {
     _TOKEN,
     _SHOW_CONSOLE,
+    _SEND_LOG,
 } = hamibot.env;
 
 // -------------------- register listener -----------------------
@@ -46,7 +47,7 @@ events.on("exit", () => {
         return frame.getLevel() >= LogLevel.Log;
     });
 
-    if (_TOKEN && _TOKEN !== "") {
+    if (_TOKEN && _TOKEN !== "" && _SEND_LOG === "true") {
 
         Record.info("Sending logs to pushplus...");
 
