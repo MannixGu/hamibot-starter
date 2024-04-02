@@ -27,10 +27,14 @@ events.on("exit", () => {
 	home();
 	sleep(1000)
 	lock_screen()
+	device.setBrightnessMode(1)
 });
 
 try {
 	device.keepScreenDim()
+	device.setBrightnessMode(0)
+	device.setBrightness(0)
+
 	init();
 
 	unlock();
