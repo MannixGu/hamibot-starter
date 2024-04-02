@@ -27,13 +27,21 @@ events.on("exit", () => {
 	home();
 	sleep(1000)
 	lock_screen()
-	device.setBrightnessMode(1)
+	try {
+		device.setBrightnessMode(1)
+	} catch (error: any) {
+		Record.error("setBrightnessMode Error:" + error.message)
+	}
 });
 
 try {
 	device.keepScreenDim()
-	device.setBrightnessMode(0)
-	device.setBrightness(0)
+	try {
+		device.setBrightnessMode(0)
+		device.setBrightness(0)
+	} catch (error: any) {
+		Record.error("setBrightnessMode Error:" + error.message)
+	}
 
 	init();
 
